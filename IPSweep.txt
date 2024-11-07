@@ -1,0 +1,26 @@
+								IPSWEEP
+1. nano ipsweep.sh 										#δημιουργούμε ένα εκτελέσιμο αρχείο με το όνομα "ipsweep" 
+
+	#! /bin/bash    									#δηλώνουμε το bin bash location και ότι τρέχουμε bash
+	for ip in ‘seq 1 254’ ; do 								#δημιουργούμε μια μεταβλητη με το όνομα "ip" η οποία θα τρέχει από το 1 μέχρι το 254
+		ping -c 1$1.$ip | grep “64 bytes” | cut -d “ ” -f  4 | tr -d “:” & 		#τρέχουμε την εντολή ping 1 φορά, $1=user input, $ip=από το 1 μέχρι το 254. Μπορούσαμε να βάλουμε ";" αντί για "&" απλά με το $ θα 
+	done												# τρέξει τις επαναλήψεις όλες μια και έξω για μεγαλύτερη ταχύτητα
+						
+						                                              	#αποθηκεύουμε το αρχείο και τρέχουμε ./ipsweep.sh 192.168.1 και κάνει ping όλες τις διευθύνσεις από 192.168.1.1 μέχρι 192.168.1.254
+	
+	./ipsweep.sh 192.168.1 > iplist.txt							#περνάμε όλες τις ip σε ένα αρχείο “iplist.txt”
+
+1.1. nano ipsweep.sh 										#iproved version											  
+
+	#! /bin/bash    
+	if [ "$1" == “” ]									#σε περίπτωση που έχουμε ξεχάσει την είσοδο
+	then
+		echo “You forgot an IP Address!”
+		echo “Syntax: ./ipsweep.sh 192.168.1”
+	else													  
+		for ip in ‘seq 1 254’ ; do 													  
+			ping -c 1$1.$ip | grep “64 bytes” | cut -d “ ” -f  4 | tr -d “:” & 
+		done
+	fi
+
+1.2 for ip in $(cat iplist.txt); do nmap -p 80 -T4 $ip & done			  		#oneliner το από πάνω και τρέχει nmap για το port 80																				  		
